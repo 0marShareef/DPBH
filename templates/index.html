@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Ethical Eye Web App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to bottom right, #3498db, #2ecc71);
+            color: white;
+        }
+
+        h2 {
+            font-size: 2em;
+            /* Increase the font size of the heading */
+            color: #fff;
+        }
+
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #file-input {
+            padding: 15px;
+            /* Adjust the padding to make the "Choose File" button bigger */
+            margin-bottom: 10px;
+        }
+
+        #output-container {
+            margin-top: 20px;
+            border: 1px solid #fff;
+            padding: 10px;
+            max-width: 600px;
+            word-wrap: break-word;
+            display: none;
+            background-color: #fff;
+            color: #333;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            /* Stretch the "Submit" button to match the width of the "Choose File" button */
+            margin-top: 10px;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Ethical Eye Web App</h2>
+
+    <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" id="file-input" name="file" accept="image/*">
+        <button type="button" onclick="uploadImage()">Submit</button>
+    </form>
+
+    <div id="output-container"></div>
+
+    <script>
+        async function uploadImage() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await fetch('/uploadfile/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                const outputContainer = document.getElementById('output-container');
+                outputContainer.innerHTML = '';
+
+                if (result.text_output) {
+                    const heading = document.createElement('h3');
+                    heading.textContent = 'Generated Text Output:';
+                    outputContainer.appendChild(heading);
+
+                    const paragraph = document.createElement('p');
+                    paragraph.textContent = result.text_output;
+                    outputContainer.appendChild(paragraph);
+
+                    outputContainer.style.display = 'block';
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
